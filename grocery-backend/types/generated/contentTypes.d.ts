@@ -724,6 +724,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    user_carts: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::user-cart.user-cart'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -801,7 +806,12 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   };
   attributes: {
     img: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    Title: Attribute.String;
+    title: Attribute.String;
+    products: Attribute.Relation<
+      'api::category.category',
+      'manyToMany',
+      'api::product.product'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -857,18 +867,30 @@ export interface ApiProductProduct extends Schema.CollectionType {
     singularName: 'product';
     pluralName: 'products';
     displayName: 'Product';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    Title: Attribute.String;
+    title: Attribute.String;
     Price: Attribute.Decimal;
     Image: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     Description: Attribute.Text;
     Rating: Attribute.Decimal;
     Brand: Attribute.String;
     Stock: Attribute.String;
+    discount: Attribute.Decimal;
+    categories: Attribute.Relation<
+      'api::product.product',
+      'manyToMany',
+      'api::category.category'
+    >;
+    user_carts: Attribute.Relation<
+      'api::product.product',
+      'manyToMany',
+      'api::user-cart.user-cart'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -880,6 +902,49 @@ export interface ApiProductProduct extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::product.product',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiUserCartUserCart extends Schema.CollectionType {
+  collectionName: 'user_carts';
+  info: {
+    singularName: 'user-cart';
+    pluralName: 'user-carts';
+    displayName: 'UserCart';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    quantity: Attribute.Integer;
+    amount: Attribute.Decimal;
+    products: Attribute.Relation<
+      'api::user-cart.user-cart',
+      'manyToMany',
+      'api::product.product'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::user-cart.user-cart',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    userId: Attribute.Integer;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::user-cart.user-cart',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::user-cart.user-cart',
       'oneToOne',
       'admin::user'
     > &
@@ -908,6 +973,7 @@ declare module '@strapi/types' {
       'api::category.category': ApiCategoryCategory;
       'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
+      'api::user-cart.user-cart': ApiUserCartUserCart;
     }
   }
 }
