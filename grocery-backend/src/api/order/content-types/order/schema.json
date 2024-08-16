@@ -4,18 +4,27 @@
   "info": {
     "singularName": "order",
     "pluralName": "orders",
-    "displayName": "Order"
+    "displayName": "Order",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "Product": {
-      "type": "string"
+    "userId": {
+      "type": "integer"
     },
-    "Delivered": {
-      "type": "date"
+    "OrderedItemList": {
+      "type": "component",
+      "repeatable": true,
+      "component": "ordered-item.ordered-item"
+    },
+    "paymentId": {
+      "type": "text"
+    },
+    "OrderAmt": {
+      "type": "integer"
     }
   }
 }

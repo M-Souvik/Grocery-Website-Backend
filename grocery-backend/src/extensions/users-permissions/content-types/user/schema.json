@@ -71,6 +71,12 @@
       "relation": "manyToMany",
       "target": "api::user-cart.user-cart",
       "mappedBy": "users_permissions_users"
+    },
+    "billing_details": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::billing-detail.billing-detail",
+      "mappedBy": "users_permissions_user"
     }
   }
 }

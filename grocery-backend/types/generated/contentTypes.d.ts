@@ -729,6 +729,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'manyToMany',
       'api::user-cart.user-cart'
     >;
+    billing_details: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::billing-detail.billing-detail'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -793,6 +798,44 @@ export interface PluginI18NLocale extends Schema.CollectionType {
   };
 }
 
+export interface ApiBillingDetailBillingDetail extends Schema.CollectionType {
+  collectionName: 'billing_details';
+  info: {
+    singularName: 'billing-detail';
+    pluralName: 'billing-details';
+    displayName: 'Billing detail';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    username: Attribute.String;
+    phone: Attribute.BigInteger;
+    Email: Attribute.Email;
+    address: Attribute.Text;
+    users_permissions_user: Attribute.Relation<
+      'api::billing-detail.billing-detail',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::billing-detail.billing-detail',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::billing-detail.billing-detail',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCategoryCategory extends Schema.CollectionType {
   collectionName: 'categories';
   info: {
@@ -836,13 +879,16 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     singularName: 'order';
     pluralName: 'orders';
     displayName: 'Order';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    Product: Attribute.String;
-    Delivered: Attribute.Date;
+    userId: Attribute.Integer;
+    OrderedItemList: Attribute.Component<'ordered-item.ordered-item', true>;
+    paymentId: Attribute.Text;
+    OrderAmt: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -970,6 +1016,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'plugin::i18n.locale': PluginI18NLocale;
+      'api::billing-detail.billing-detail': ApiBillingDetailBillingDetail;
       'api::category.category': ApiCategoryCategory;
       'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
